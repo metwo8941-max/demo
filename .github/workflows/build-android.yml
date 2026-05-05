@@ -1,0 +1,54 @@
+name: Build Android
+
+on:
+  push:
+    branches: [ ci/build ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Restore Library Cache
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-Android-
+            Library-
+
+      - name: Setup Unity
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: Android
+          unityVersion: 6000.2.5f1
+
+      - name: Build Android APK
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: Android
+          unityVersion: 6000.2.5f1
+          buildMethod: BuildScript.PerformBuildDebug
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-build
+          path: build/Android/*.apk
+          retention-days: 7
+
+      - name: Clean CI Branch
+        if: always()
+        run: |
+          git push origin --delete ci/build || true
