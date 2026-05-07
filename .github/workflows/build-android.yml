@@ -13,6 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           lfs: true
 
       - name: Restore Library Cache
@@ -24,28 +25,24 @@ jobs:
             Library-Android-
             Library-
 
-      - name: Setup Unity
+      - name: Build Android
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          targetPlatform: Android
-          unityVersion: 6000.2.5f1
-
-      - name: Build Android APK
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
           unityVersion: 6000.2.5f1
           buildMethod: BuildScript.PerformBuildDebug
 
+          androidExportType: androidPackage
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-debug-build
-          path: build/Android/*.apk
+          path: build/Android
           retention-days: 7
 
       - name: Clean CI Branch
