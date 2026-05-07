@@ -30,6 +30,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
+          customParameters: -quiet -nographics
           targetPlatform: Android
           unityVersion: 6000.2.5f1
           buildMethod: BuildScript.PerformBuildDebug
