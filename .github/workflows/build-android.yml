@@ -1,8 +1,6 @@
 name: Build Android
 
 on:
-  push:
-    branches: [ ci/build ]
   workflow_dispatch:
 
 jobs:
