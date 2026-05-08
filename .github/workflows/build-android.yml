@@ -4,40 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  checklicense:
-    name: Check UNITY_LICENSE
-    runs-on: ubuntu-latest
-    outputs:
-      is_unity_license_set: ${{ steps.checklicense_job.outputs.is_unity_license_set }}
-    steps:
-      - name: Check whether UNITY_LICENSE is configured
-        id: checklicense_job
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        run: |
-          if [ -z "$UNITY_LICENSE" ]; then
-            echo "UNITY_LICENSE is missing in repository secrets."
-            echo "is_unity_license_set=false" >> $GITHUB_OUTPUT
-          else
-            echo "UNITY_LICENSE is configured."
-            echo "is_unity_license_set=true" >> $GITHUB_OUTPUT
-          fi
-
-  missinglicense:
-    needs: checklicense
-    if: needs.checklicense.outputs.is_unity_license_set == 'false'
-    name: Missing UNITY_LICENSE
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fail with missing license message
-        run: |
-          echo "UNITY_LICENSE is missing in repository secrets."
-          echo "Please open GitHub settings in UniIDE and configure UNITY_LICENSE before running the build again."
-          exit 1
-
   build:
-    needs: checklicense
-    if: needs.checklicense.outputs.is_unity_license_set == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -46,6 +13,46 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+
+      - name: Check UNITY_LICENSE secret
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          if [ -z "$UNITY_LICENSE" ]; then
+            echo "UNITY_LICENSE is missing in repository secrets."
+            echo "Please open GitHub settings in UniIDE and configure UNITY_LICENSE before running the build again."
+            exit 1
+          fi
+          echo "UNITY_LICENSE is configured."
+
+      - name: Create Unity license validation script
+        run: |
+          mkdir -p Assets/Editor/UniIDE/Generated
+          cat > Assets/Editor/UniIDE/Generated/UnityLicenseValidation.cs <<'EOF'
+          using UnityEngine;
+
+          namespace UniIDE.Generated
+          {
+              public static class UnityLicenseValidation
+              {
+                  public static void ValidateLicense()
+                  {
+                      Debug.Log("UNITY_LICENSE validation succeeded.");
+                  }
+              }
+          }
+          EOF
+
+      - name: Verify Unity license
+        uses: game-ci/unity-builder@v5.0.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: Android
+          unityVersion: 6000.2.5f1
+          buildMethod: UniIDE.Generated.UnityLicenseValidation.ValidateLicense
 
       - name: Restore Library Cache
         uses: actions/cache@v4
