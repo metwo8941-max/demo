@@ -74,6 +74,7 @@ jobs:
           targetPlatform: Android
           unityVersion: 6000.2.5f1
           buildMethod: BuildScript.PerformBuildDebug
+          allowDirtyBuild: true
 
           androidExportType: androidPackage
 
