@@ -53,6 +53,7 @@ jobs:
           targetPlatform: Android
           unityVersion: 6000.2.5f1
           buildMethod: UniIDE.Generated.UnityLicenseValidation.ValidateLicense
+          allowDirtyBuild: true
 
       - name: Restore Library Cache
         uses: actions/cache@v4
