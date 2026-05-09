@@ -75,12 +75,12 @@ jobs:
           unityVersion: 6000.2.5f1
           allowDirtyBuild: true
 
-          androidExportType: androidAppBundle
+          androidExportType: androidPackage
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: android-release-build
+          name: android-debug-build
           path: build/Android
           retention-days: 7
 
