@@ -1,3 +1,7 @@
+# This .gitignore file should be placed at the root of your Unity project directory
+#
+# Keep source assets and .meta files tracked, and ignore editor- and build-generated output.
+
 # Unity generated
 /[Ll]ibrary/
 /[Tt]emp/
@@ -9,31 +13,22 @@
 /[Mm]emoryCaptures/
 /[Rr]ecordings/
 
-# Unity meta files
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
+
+# Unity auto-generated metadata and crash data
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
-
-# Unity generated file on crash reports
 sysinfo.txt
 
-# Unity Code Coverage
-/[Cc]odeCoverage/
-
-# Unity UI Toolkit
-/[Uu]iElementsSchema/
-
-# Unity Addressables
-/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
-
-# Unity Streaming Assets
-/[Aa]ssets/[Ss]treamingAssets/aa.meta
-/[Aa]ssets/[Ss]treamingAssets/aa/*
-
-# IDE
+# IDE and editor state
 .vs/
 .vscode/
 .idea/
+.consulo/
+ExportedObj/
+obj/
 *.csproj
 *.unityproj
 *.sln
@@ -49,11 +44,28 @@ sysinfo.txt
 *.opendb
 *.VC.db
 
-# Builds
+# Gradle and local Android config
+.gradle/
+local.properties
+
+# Unity package/build outputs
 *.apk
 *.aab
 *.unitypackage
 *.app
+
+# Crashlytics generated file
+crashlytics-build.properties
+
+# Unity UI Toolkit
+/[Uu]iElementsSchema/
+
+# Packed Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Temporary auto-generated Android Assets
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # OS generated
 .DS_Store
@@ -61,8 +73,5 @@ sysinfo.txt
 ._*
 .Spotlight-V100
 .Trashes
+ehthumbs.db
 Thumbs.db
-
-# Gradle
-.gradle/
-local.properties

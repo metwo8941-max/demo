@@ -27,6 +27,22 @@ jobs:
           fi
           echo "UNITY_LICENSE is configured."
 
+      - name: Free GitHub runner disk space
+        run: |
+          echo "Disk usage before cleanup:"
+          df -h
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/share/swift || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          docker system prune -af || true
+          echo "Disk usage after cleanup:"
+          df -h
+
+      - name: Prepare Library cache directory
+        run: mkdir -p Library
+      
       - name: Restore Library Cache
         uses: actions/cache@v4
         with:
@@ -226,7 +242,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
-          unityVersion: 6000.2.5f1
+          unityVersion: 6000.3.14f1
           buildMethod: UniIDE.Generated.UnityLicenseValidation.ValidateLicense
           allowDirtyBuild: true
 
@@ -238,7 +254,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
-          unityVersion: 6000.2.5f1
+          unityVersion: 6000.3.14f1
           buildMethod: UniIDE.Generated.AndroidCiBuild.Validate
           allowDirtyBuild: true
 
@@ -251,7 +267,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
-          unityVersion: 6000.2.5f1
+          unityVersion: 6000.3.14f1
           buildMethod: UniIDE.Generated.AndroidCiBuild.Build
           allowDirtyBuild: true
 
